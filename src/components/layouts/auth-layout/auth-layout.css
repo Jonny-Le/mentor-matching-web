@@ -1,0 +1,24 @@
+.auth-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-layout__img-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.auth-layout__content {
+  position: absolute;
+  /* @media only screen and (min-width: 48em) {
+    left: 40%;
+    padding: 40px;
+    width: 60%;
+  } */
+}
