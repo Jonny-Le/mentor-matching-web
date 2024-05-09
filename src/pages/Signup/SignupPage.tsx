@@ -28,17 +28,17 @@ const RoleValues = Object.values(Role);
 
 export const SignupPage = () => {
   const [selectedRole, setSelectedRole] = useState<Role>(Role.MENTOR);
-  const [email, setEmail] = useState(''); 
-  const [password, setPassword] = useState(''); 
-  const handleSubmit = async (e: { preventDefault: () => void; }) =>{
-    e.preventDefault()
-    try{
-      createUserWithEmailAndPassword(auth, email,password)
-      console.log("account created")
-    } catch(err){
-      console.log(err)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    try {
+      createUserWithEmailAndPassword(auth, email, password);
+      console.log('account created');
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
 
   const renderRoleButton = () =>
     RoleValues.map((role) => (
@@ -71,7 +71,7 @@ export const SignupPage = () => {
           <form onSubmit={handleSubmit}>
             <FormControl mb={4}>
               <FormLabel>Username</FormLabel>
-              <Input type="email" />
+              <Input type="email" onChange={(e) => setEmail(e.target.value)} />
             </FormControl>
             <FormControl>
               <FormLabel>Password</FormLabel>
