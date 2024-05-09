@@ -30,7 +30,7 @@ export const LoginPage = observer(() => {
 
         <Wrap as="b" justify="center">
           <WrapItem>
-            <div>Next a SaigonChildren account?</div>
+            <div>Do not have a SaigonChildren account?</div>
           </WrapItem>
           <WrapItem>
             <Link to={ROUTE_PATHS.SIGNUP}>Create an account</Link>
