@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import {
   Container,
   FormControl,
@@ -11,8 +12,11 @@ import {
   Stack,
   SimpleGrid,
 } from '@chakra-ui/react';
+import { auth } from '/Users/prachiheda/Desktop/mentor-matching-web/src/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Link } from '@src/components/common';
 import { AuthLayout } from '@src/components/layouts';
+
 import { ROUTE_PATHS } from '@src/constants/routes.constants';
 
 enum Role {
@@ -24,6 +28,17 @@ const RoleValues = Object.values(Role);
 
 export const SignupPage = () => {
   const [selectedRole, setSelectedRole] = useState<Role>(Role.MENTOR);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    try {
+      createUserWithEmailAndPassword(auth, email, password);
+      console.log('account created');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const renderRoleButton = () =>
     RoleValues.map((role) => (
@@ -53,18 +68,14 @@ export const SignupPage = () => {
         </Stack>
 
         <Box mt={10} mb={6}>
-          <form>
+          <form onSubmit={handleSubmit}>
             <FormControl mb={4}>
               <FormLabel>Username</FormLabel>
-              <Input type="email" />
+              <Input type="email" onChange={(e) => setEmail(e.target.value)} />
             </FormControl>
             <FormControl>
               <FormLabel>Password</FormLabel>
-              <Input type="password" />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Confirm Password</FormLabel>
-              <Input type="password" />
+              <Input type="password" onChange={(e) => setPassword(e.target.value)} />
             </FormControl>
             <Button mt={6} colorScheme="blue" type="submit" w="100%">
               Sign Up
