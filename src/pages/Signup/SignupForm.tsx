@@ -1,7 +1,7 @@
 import {useState} from 'react'
 
 import { FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
-import {auth} from '/Users/prachiheda/Desktop/mentor-matching-web/src/firebase'
+import {auth} from "../../firebase"
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 

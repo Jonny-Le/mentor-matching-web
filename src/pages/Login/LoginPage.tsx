@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Box, Button, Container, FormControl, FormLabel, Input, Text, Wrap, WrapItem } from '@chakra-ui/react';
-import { auth } from '/Users/prachiheda/Desktop/mentor-matching-web/src/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { observer } from 'mobx-react';
 import { Link } from '@src/components/common';
 import { AuthLayout } from '@src/components/layouts';
 import { ROUTE_PATHS } from '@src/constants/routes.constants';
+import { auth } from "../../firebase";
+
 
 
 export const LoginPage = observer(() => {
