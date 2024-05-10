@@ -1,10 +1,25 @@
+import { useState } from 'react';
 import { Box, Button, Container, FormControl, FormLabel, Input, Text, Wrap, WrapItem } from '@chakra-ui/react';
+import { auth } from '/Users/prachiheda/Desktop/mentor-matching-web/src/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { observer } from 'mobx-react';
 import { Link } from '@src/components/common';
 import { AuthLayout } from '@src/components/layouts';
 import { ROUTE_PATHS } from '@src/constants/routes.constants';
 
+
 export const LoginPage = observer(() => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      console.log('login success');
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <AuthLayout>
       <Container maxW="container.sm">
@@ -13,14 +28,14 @@ export const LoginPage = observer(() => {
         </Text>
 
         <Box mt={10} mb={6}>
-          <form>
+        <form onSubmit={handleSubmit}>
             <FormControl mb={4}>
-              <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <FormLabel>Username</FormLabel>
+              <Input type="email" onChange={(e) => setEmail(e.target.value)} />
             </FormControl>
             <FormControl>
               <FormLabel>Password</FormLabel>
-              <Input type="password" />
+              <Input type="password" onChange={(e) => setPassword(e.target.value)} />
             </FormControl>
             <Button mt={6} colorScheme="blue" type="submit" w="100%">
               Log in

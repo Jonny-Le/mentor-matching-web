@@ -33,7 +33,7 @@ export const SignupPage = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
-      createUserWithEmailAndPassword(auth, email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
       console.log('account created');
     } catch (err) {
       console.log(err);
