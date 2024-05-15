@@ -1,24 +1,23 @@
-
 import { useState } from 'react';
 import {
-  Container, 
-  FormControl, 
-  FormLabel, 
-  Input, 
-  Button, 
-  Text, 
-  Box, 
+  Container,
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  Text,
+  Box,
   Center,
   Stack,
   SimpleGrid,
-
-} 
-from '@chakra-ui/react';
+  Wrap,
+  WrapItem,
+} from '@chakra-ui/react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Link } from '@src/components/common';
 import { AuthLayout } from '@src/components/layouts';
 import { ROUTE_PATHS } from '@src/constants/routes.constants';
-import { auth } from "../../firebase";
+import { auth } from '../../firebase';
 
 enum Role {
   MENTOR = 'Mentor',
@@ -38,13 +37,24 @@ export const SignupPage = () => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setPasswordError('Passwords do not match.');
-      return;  // Stop the form submission
+
+      setTimeout(() => {
+        setPasswordError('');
+      }, 5000);
+      return; // Stop the form submission
     }
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      console.log('account created');
-    } catch (err) {
-      console.log(err);
+      console.log('Account Created Successfully');
+    } catch (err: any) {
+      if (err.code === 'auth/email-already-in-use') {
+        setPasswordError('This email is already in use. Please use a different email');
+      } else if (err.code === 'auth/weak-password') {
+        setPasswordError('Password must be longer than 6 characters. Please try a different password');
+      } else {
+        console.error('Signup failed: ', err.message);
+        setPasswordError('Failed to create account. Please try again later');
+      }
     }
   };
 
@@ -64,8 +74,12 @@ export const SignupPage = () => {
     <AuthLayout>
       <Container maxW="container.sm">
         <Stack spacing={3}>
-          <Text fontSize="4xl" as="b">Sign Up</Text>
-          <Text fontSize="md" color="gray.500" as="b">Join SaigonChildren as a</Text>
+          <Text fontSize="4xl" as="b">
+            Sign Up
+          </Text>
+          <Text fontSize="md" color="gray.500" as="b">
+            Join SaigonChildren as a
+          </Text>
           <SimpleGrid columns={2} mt={4} spacing={2}>
             {renderRoleButton()}
           </SimpleGrid>
@@ -92,11 +106,14 @@ export const SignupPage = () => {
           </form>
         </Box>
 
-        <Center textAlign="center">
-          <Text as="b">
-            <Link to={ROUTE_PATHS.LOGIN}>Already have an account?</Link>
-          </Text>
-        </Center>
+        <Wrap as="b" justify="center">
+          <WrapItem>
+            <div>Already have a SaigonChildren account?</div>
+          </WrapItem>
+          <WrapItem>
+            <Link to={ROUTE_PATHS.LOGIN}>Log in</Link>
+          </WrapItem>
+        </Wrap>
       </Container>
     </AuthLayout>
   );

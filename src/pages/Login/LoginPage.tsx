@@ -12,13 +12,59 @@ import { auth } from "../../firebase";
 export const LoginPage = observer(() => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      console.log('login success');
-    } catch (err) {
-      console.log(err);
+      console.log('User logged in successfully');
+      // Redirect the user or update UI to show successful login
+    } catch (err: any) {
+      switch (err.code) {
+        case 'auth/missing-password':
+          setPasswordError('Missing password');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+
+        case 'auth/user-not-found':
+          console.error('No user found with this email.');
+          setPasswordError('Incorrect login credentials');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+
+        case 'auth/wrong-password':
+          console.error('Incorrect password.');
+          setPasswordError('Incorrect login credentials');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+        
+        case 'auth/invalid-credential':
+          console.error('Invalid credentials');
+          setPasswordError('Incorrect login credentials');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+
+        case 'auth/invalid-email':
+          console.error('Invalid email entered.');
+          setPasswordError('Invalid email');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+
+        default:
+          console.error('Login failed:', err.message);
+        
+      }
     }
   };
   return (
@@ -37,6 +83,7 @@ export const LoginPage = observer(() => {
             <FormControl>
               <FormLabel>Password</FormLabel>
               <Input type="password" onChange={(e) => setPassword(e.target.value)} />
+              {passwordError && <Text color="red.500">{passwordError}</Text>}
             </FormControl>
             <Button mt={6} colorScheme="blue" type="submit" w="100%">
               Log in
