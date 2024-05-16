@@ -16,9 +16,4 @@
 
 .auth-layout__content {
   position: absolute;
-  /* @media only screen and (min-width: 48em) {
-    left: 40%;
-    padding: 40px;
-    width: 60%;
-  } */
 }
