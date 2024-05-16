@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   FormControl,
@@ -7,7 +8,6 @@ import {
   Button,
   Text,
   Box,
-  Center,
   Stack,
   SimpleGrid,
   Wrap,
@@ -32,6 +32,7 @@ export const SignupPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -46,14 +47,47 @@ export const SignupPage = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       console.log('Account Created Successfully');
+      navigate(ROUTE_PATHS.LOGIN);
     } catch (err: any) {
-      if (err.code === 'auth/email-already-in-use') {
-        setPasswordError('This email is already in use. Please use a different email');
-      } else if (err.code === 'auth/weak-password') {
-        setPasswordError('Password must be longer than 6 characters. Please try a different password');
-      } else {
-        console.error('Signup failed: ', err.message);
-        setPasswordError('Failed to create account. Please try again later');
+      switch (err.code) {
+  
+        case 'auth/missing-email':
+          console.error('Missing email');
+          setPasswordError('Missing email');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+  
+        case 'auth/missing-password':
+          setPasswordError('Missing password');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+  
+        case 'auth/email-already-in-use':
+          console.error('Email already in use');
+          setPasswordError('This email is already in use. Please use a different email');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+  
+        case 'auth/weak-password':
+          console.error('Weak password');
+          setPasswordError('Password must be at least 6 characters. Please try a different password');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+
+        default:
+          console.error('Signup failed: ', err.message);
+          setPasswordError('Failed to create account. Please try again later');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
       }
     }
   };

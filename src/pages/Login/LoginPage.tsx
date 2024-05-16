@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Container, FormControl, FormLabel, Input, Text, Wrap, WrapItem } from '@chakra-ui/react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { observer } from 'mobx-react';
@@ -13,15 +14,35 @@ export const LoginPage = observer(() => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in successfully');
+      navigate(ROUTE_PATHS.LOGIN);
+      
       // Redirect the user or update UI to show successful login
     } catch (err: any) {
       switch (err.code) {
+
+        case 'auth/missing-email':
+          console.error('Missing email');
+          setPasswordError('Missing email');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+
+        case 'auth/invalid-email':
+          console.error('Invalid email entered');
+          setPasswordError('Invalid email');
+          setTimeout(() => {
+            setPasswordError('');
+          }, 5000);
+          break;
+
         case 'auth/missing-password':
           setPasswordError('Missing password');
           setTimeout(() => {
@@ -30,16 +51,16 @@ export const LoginPage = observer(() => {
           break;
 
         case 'auth/user-not-found':
-          console.error('No user found with this email.');
-          setPasswordError('Incorrect login credentials');
+          console.error('No user found with this email');
+          setPasswordError('No user found with this email.');
           setTimeout(() => {
             setPasswordError('');
           }, 5000);
           break;
 
         case 'auth/wrong-password':
-          console.error('Incorrect password.');
-          setPasswordError('Incorrect login credentials');
+          console.error('Incorrect password');
+          setPasswordError('Incorrect password');
           setTimeout(() => {
             setPasswordError('');
           }, 5000);
@@ -47,15 +68,7 @@ export const LoginPage = observer(() => {
         
         case 'auth/invalid-credential':
           console.error('Invalid credentials');
-          setPasswordError('Incorrect login credentials');
-          setTimeout(() => {
-            setPasswordError('');
-          }, 5000);
-          break;
-
-        case 'auth/invalid-email':
-          console.error('Invalid email entered.');
-          setPasswordError('Invalid email');
+          setPasswordError('Incorrect email and/or password');
           setTimeout(() => {
             setPasswordError('');
           }, 5000);
