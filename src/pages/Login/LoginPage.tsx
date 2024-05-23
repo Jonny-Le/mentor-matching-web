@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, Container, FormControl, FormLabel, Input, Text, Wrap, WrapItem } from '@chakra-ui/react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { observer } from 'mobx-react';
 import { Link } from '@src/components/common';
 import { AuthLayout } from '@src/components/layouts';
 import { ROUTE_PATHS } from '@src/constants/routes.constants';
-import { auth } from "../../firebase";
-
-
+import { auth } from '@src/firebase';
 
 export const LoginPage = observer(() => {
   const [email, setEmail] = useState('');
@@ -21,13 +19,11 @@ export const LoginPage = observer(() => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in successfully');
-      window.location.reload()
       //navigate(ROUTE_PATHS.SIGNUP);
-      
+
       // Redirect the user or update UI to show successful login
     } catch (err: any) {
       switch (err.code) {
-
         case 'auth/missing-email':
           console.error('Missing email');
           setPasswordError('Missing email');
@@ -66,7 +62,7 @@ export const LoginPage = observer(() => {
             setPasswordError('');
           }, 5000);
           break;
-        
+
         case 'auth/invalid-credential':
           console.error('Invalid credentials');
           setPasswordError('Incorrect email and/or password');
@@ -77,7 +73,6 @@ export const LoginPage = observer(() => {
 
         default:
           console.error('Login failed:', err.message);
-        
       }
     }
   };
@@ -89,7 +84,7 @@ export const LoginPage = observer(() => {
         </Text>
 
         <Box mt={10} mb={6}>
-        <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <FormControl mb={4}>
               <FormLabel>Username</FormLabel>
               <Input type="email" onChange={(e) => setEmail(e.target.value)} />
