@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   FormControl,
@@ -50,7 +50,6 @@ export const SignupPage = () => {
       navigate(ROUTE_PATHS.LOGIN);
     } catch (err: any) {
       switch (err.code) {
-  
         case 'auth/missing-email':
           console.error('Missing email');
           setPasswordError('Missing email');
@@ -58,14 +57,14 @@ export const SignupPage = () => {
             setPasswordError('');
           }, 5000);
           break;
-  
+
         case 'auth/missing-password':
           setPasswordError('Missing password');
           setTimeout(() => {
             setPasswordError('');
           }, 5000);
           break;
-  
+
         case 'auth/email-already-in-use':
           console.error('Email already in use');
           setPasswordError('This email is already in use. Please use a different email');
@@ -73,7 +72,7 @@ export const SignupPage = () => {
             setPasswordError('');
           }, 5000);
           break;
-  
+
         case 'auth/weak-password':
           console.error('Weak password');
           setPasswordError('Password must be at least 6 characters. Please try a different password');

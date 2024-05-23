@@ -15,7 +15,6 @@
     "@emotion/styled": "^11.11.5",
     "axios": "^1.6.8",
     "chakra-react-select": "^4.7.6",
-    "dotenv": "^16.4.5",
     "firebase": "^10.11.1",
     "framer-motion": "^11.0.25",
     "mobx": "^6.12.3",
