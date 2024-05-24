@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Container,
   FormControl,
@@ -14,10 +13,11 @@ import {
   WrapItem,
 } from '@chakra-ui/react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { addDoc, collection } from 'firebase/firestore';
 import { Link } from '@src/components/common';
 import { AuthLayout } from '@src/components/layouts';
 import { ROUTE_PATHS } from '@src/constants/routes.constants';
-import { auth } from '@src/firebase';
+import { auth, db } from '../../firebase';
 
 enum Role {
   MENTOR = 'Mentor',
@@ -32,61 +32,32 @@ export const SignupPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       setPasswordError('Passwords do not match.');
-
       setTimeout(() => {
         setPasswordError('');
       }, 5000);
       return; // Stop the form submission
     }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await addDoc(collection(db, 'users'), {
+        uid: userCredential.user.uid,
+        email,
+        role: selectedRole,
+      });
       console.log('Account Created Successfully');
-      navigate(ROUTE_PATHS.LOGIN);
     } catch (err: any) {
-      switch (err.code) {
-        case 'auth/missing-email':
-          console.error('Missing email');
-          setPasswordError('Missing email');
-          setTimeout(() => {
-            setPasswordError('');
-          }, 5000);
-          break;
-
-        case 'auth/missing-password':
-          setPasswordError('Missing password');
-          setTimeout(() => {
-            setPasswordError('');
-          }, 5000);
-          break;
-
-        case 'auth/email-already-in-use':
-          console.error('Email already in use');
-          setPasswordError('This email is already in use. Please use a different email');
-          setTimeout(() => {
-            setPasswordError('');
-          }, 5000);
-          break;
-
-        case 'auth/weak-password':
-          console.error('Weak password');
-          setPasswordError('Password must be at least 6 characters. Please try a different password');
-          setTimeout(() => {
-            setPasswordError('');
-          }, 5000);
-          break;
-
-        default:
-          console.error('Signup failed: ', err.message);
-          setPasswordError('Failed to create account. Please try again later');
-          setTimeout(() => {
-            setPasswordError('');
-          }, 5000);
+      if (err.code === 'auth/email-already-in-use') {
+        setPasswordError('This email is already in use. Please use a different email');
+      } else if (err.code === 'auth/weak-password') {
+        setPasswordError('Password must be longer than 6 characters. Please try a different password');
+      } else {
+        console.error('Signup failed: ', err.message);
+        setPasswordError('Failed to create account. Please try again later');
       }
     }
   };
@@ -121,16 +92,28 @@ export const SignupPage = () => {
         <Box mt={10} mb={6}>
           <form onSubmit={handleSubmit}>
             <FormControl mb={4}>
-              <FormLabel>Username</FormLabel>
-              <Input type="email" onChange={(e) => setEmail(e.target.value)} />
+              <FormLabel>Email</FormLabel>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </FormControl>
             <FormControl mb={4}>
               <FormLabel>Password</FormLabel>
-              <Input type="password" onChange={(e) => setPassword(e.target.value)} />
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </FormControl>
             <FormControl mb={4}>
               <FormLabel>Confirm Password</FormLabel>
-              <Input type="password" onChange={(e) => setConfirmPassword(e.target.value)} />
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
               {passwordError && <Text color="red.500">{passwordError}</Text>}
             </FormControl>
             <Button mt={6} colorScheme="blue" type="submit" w="100%">
@@ -151,3 +134,4 @@ export const SignupPage = () => {
     </AuthLayout>
   );
 };
+

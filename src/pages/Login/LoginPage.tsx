@@ -19,6 +19,7 @@ export const LoginPage = observer(() => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log('User logged in successfully');
+      navigate(ROUTE_PATHS.ON_BOARDING);
       //navigate(ROUTE_PATHS.SIGNUP);
 
       // Redirect the user or update UI to show successful login

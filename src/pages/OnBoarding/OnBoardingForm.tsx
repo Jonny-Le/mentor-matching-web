@@ -69,8 +69,8 @@ export const OnBoardingForm = ({
     const props: IControlProps = {
       name,
       label,
-      placeholder,
-      disabled: disabledFields[name],
+      // placeholder,
+      // disabled: disabledFields[name],
     };
 
     switch (display) {
