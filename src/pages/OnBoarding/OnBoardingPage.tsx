@@ -3,6 +3,8 @@ import { MainLayout } from '@src/components/layouts/main-layout/MainLayout';
 import { TFormValues } from '@src/pages/OnBoarding/models/on-boarding.model';
 import { onBoardingFormSettings } from './constant/on-boarding-form-settings';
 import { OnBoardingForm } from './OnBoardingForm';
+import { addDoc, collection } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 import './on-boarding-page.css';
 
 // TODO: Fetching Personal Information from API
@@ -28,8 +30,16 @@ export const OnBoardingPage = () => {
     async (values: TFormValues) => {
       const newValues = { ...formValues, ...values };
       if (currentPage === onBoardingFormSettings.length) {
-        // TODO: Handle final submit values
+        // Handle final submit values
         console.log(newValues);
+        try {
+          await addDoc(collection(db, 'form'), {
+            ...newValues,
+          });
+          console.log('Document successfully written!');
+        } catch (e) {
+          console.error('Error adding document: ', e);
+        }
         return;
       }
       setIsFadingOut(true);
