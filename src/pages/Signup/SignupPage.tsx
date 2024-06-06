@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Container,
   FormControl,
@@ -12,7 +11,10 @@ import {
   SimpleGrid,
   Wrap,
   WrapItem,
+  Tooltip,
+  Icon,
 } from '@chakra-ui/react';
+import { CheckIcon, WarningIcon } from '@chakra-ui/icons';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { addDoc, collection } from 'firebase/firestore';
 import { Link } from '@src/components/common';
@@ -33,10 +35,16 @@ export const SignupPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long.');
+      setTimeout(() => {
+        setPasswordError('');
+      }, 5000);
+      return; // Stop the form submission
+    }
     if (password !== confirmPassword) {
       setPasswordError('Passwords do not match.');
       setTimeout(() => {
@@ -52,7 +60,6 @@ export const SignupPage = () => {
         role: selectedRole,
       });
       console.log('Account Created Successfully');
-      navigate(ROUTE_PATHS.LOGIN);
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
         setPasswordError('This email is already in use. Please use a different email');
@@ -109,6 +116,16 @@ export const SignupPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {password.length > 0 && password.length < 6 && (
+                <Text mt={2} color="red.500">
+                  <WarningIcon mr={2} /> Password must be at least 6 characters long
+                </Text>
+              )}
+              {password.length >= 6 && (
+                <Text mt={2} color="green.500">
+                  <CheckIcon mr={2} /> Password is valid
+                </Text>
+              )}
             </FormControl>
             <FormControl mb={4}>
               <FormLabel>Confirm Password</FormLabel>
@@ -137,4 +154,5 @@ export const SignupPage = () => {
     </AuthLayout>
   );
 };
+
 
