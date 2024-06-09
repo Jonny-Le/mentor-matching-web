@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   FormControl,
@@ -35,6 +36,8 @@ export const SignupPage = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const navigate = useNavigate();
+
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -59,6 +62,7 @@ export const SignupPage = () => {
         email,
         role: selectedRole,
       });
+      navigate(ROUTE_PATHS.LOGIN);
       console.log('Account Created Successfully');
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
