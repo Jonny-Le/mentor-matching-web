@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CheckIcon, WarningIcon } from '@chakra-ui/icons';  // Moved up
 import {
   Container,
   FormControl,
@@ -15,7 +16,6 @@ import {
   Tooltip,
   Icon,
 } from '@chakra-ui/react';
-import { CheckIcon, WarningIcon } from '@chakra-ui/icons';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { addDoc, collection } from 'firebase/firestore';
 import { Link } from '@src/components/common';
